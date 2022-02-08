@@ -80,8 +80,7 @@
                                                                         </div>
                                                                         <div class="cart-info">
                                                                             @if (Auth::check())
-                                                                                <a id="button_cart" {{-- onclick="sendData({{ $onsale[$j * 5 + $i]->id }})" --}}
-                                                                                    data-bs-toggle="modal"
+                                                                                <a id="button_cart" data-bs-toggle="modal"
                                                                                     data-bs-target="#addtocart"
                                                                                     data-user_id="{{ auth()->user()->id }}"
                                                                                     data-id="{{ $onsale[$j * 5 + $i]->id }}"

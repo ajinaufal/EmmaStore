@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 class CheckoutController extends Controller
 {
@@ -88,19 +89,27 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
-        $request->validate([
+        $rules = [
             'payment_group' => 'required',
-            'NamaDepan' => 'required',
-            'NamaBelakang' => 'required',
-            'Email' => 'required',
-            'Telephone' => 'required',
-            'Alamat' => 'required',
-            'KodePos' => 'required',
-            'total_harga_barang' => 'required',
-            'biaya_kirim' => 'required', #
-            'total_berat_barang' => 'required',
-            'total_bayar' => 'required',
-        ]);
+            'NamaDepanPemesan' => 'required',
+            'NamaBelakangPemesan' => 'required',
+            'EmailPemesan' => 'required',
+            'TelephonePemesan' => 'required',
+            'AlamatPemesan' => 'required',
+            'KodePosPemesan' => 'required',
+            'KotaPemesan' => 'required',
+            'shippingg' => 'required',
+            // 'total_harga_barang' => 'required',
+            // 'biaya_kirim' => 'required', 
+            // 'total_berat_barang' => 'required',
+            // 'total_bayar' => 'required',
+        ];
+    
+        $customMessages = [
+            'required' => 'Checkout gagal, pastikan anda mengisi form checkout dengan benar!'
+        ];
+
+        $this->validate($request, $rules, $customMessages);
 
         // dd($request->all());
         if (online_payment_transaction::latest('online_payment_transaction_id')->get()->count() != 0) {
@@ -121,29 +130,55 @@ class CheckoutController extends Controller
             $trans_no = "00" . $trans_no;
         elseif ($trans_no < 1000)
             $trans_no = "0" . $trans_no;
-
-        $create_payment_transaction = online_payment_transaction::create([
-            'transaction_no' => $trans_no,
-            'metode_pembayaran' => $request->payment_group,
-            'firstname' => auth()->user()->firstname,
-            'lastname' => auth()->user()->lastname,
-            'email' => auth()->user()->email,
-            'hp' => auth()->user()->telephone,
-            'address' => auth()->user()->address,
-            'postal_code' => auth()->user()->postal_code,
-            'recipient_firstname' => $request->NamaDepan,
-            'recipient_lastname' => $request->NamaBelakang,
-            'recipient_hp' => $request->Telephone,
-            'recipient_address' => $request->Alamat,
-            'recipient_postal_code' => $request->KodePos,
-            'layanan' => $layanan,
-            'weight' => $request->total_berat_barang,
-            'delivery_charges' => $request->biaya_kirim * $request->total_berat_barang,
-            'administration_fee' => 0,
-            'price' => $request->total_bayar,
-            'checkout_date' => Carbon::now()->format('Y-m-d H:i:s'),
-            'counter' => 0,
-        ]);
+        if ($request->tujuan_pengiriman == 0) {
+            $create_payment_transaction = online_payment_transaction::create([
+                'transaction_no' => $trans_no,
+                'metode_pembayaran' => $request->payment_group,
+                'firstname' => $request->NamaDepanPemesan,
+                'lastname' => $request->NamaBelakangPemesan,
+                'email' => $request->EmailPemesan,
+                'hp' => $request->TelephonePemesan,
+                'address' => $request->AlamatPemesan,
+                'postal_code' => $request->KodePosPemesan,
+                'recipient_firstname' => $request->NamaDepanPemesan,
+                'recipient_lastname' => $request->NamaBelakangPemesan,
+                'recipient_hp' => $request->TelephonePemesan,
+                'recipient_address' => $request->AlamatPemesan,
+                'recipient_postal_code' => $request->KodePosPemesan,
+                'layanan' => $layanan,
+                'weight' => $request->total_berat_barang,
+                'delivery_charges' => $request->biaya_kirim * $request->total_berat_barang,
+                'administration_fee' => 0,
+                'price' => $request->total_bayar,
+                'checkout_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'counter' => $request->tujuan_pengiriman,
+            ]);
+        } elseif ($request->tujuan_pengiriman == 1) {
+            $create_payment_transaction = online_payment_transaction::create([
+                'transaction_no' => $trans_no,
+                'metode_pembayaran' => $request->payment_group,
+                'firstname' => $request->NamaDepanPemesan,
+                'lastname' => $request->NamaBelakangPemesan,
+                'email' => $request->EmailPemesan,
+                'hp' => $request->TelephonePemesan,
+                'address' => $request->AlamatPemesan,
+                'postal_code' => $request->KodePosPemesan,
+                'recipient_firstname' => $request->NamaDepanPenerima,
+                'recipient_lastname' => $request->NamaBelakangPenerima,
+                'recipient_hp' => $request->TelephonePenerima,
+                'recipient_address' => $request->AlamatPenerima,
+                'recipient_postal_code' => $request->KodePosPenerima,
+                'layanan' => $layanan,
+                'weight' => $request->total_berat_barang,
+                'delivery_charges' => $request->biaya_kirim * $request->total_berat_barang,
+                'administration_fee' => 0,
+                'price' => $request->total_bayar,
+                'checkout_date' => Carbon::now()->format('Y-m-d H:i:s'),
+                'counter' => $request->tujuan_pengiriman,
+            ]);
+        }
+        
+        
 
         $cart = cart::where('user_id', auth()->user()->id)->get();
 
@@ -203,20 +238,24 @@ class CheckoutController extends Controller
             }
 
             $data_email = [
-                'email' => $request->Email,
-                'name'  => $request->NamaDepan . " " . $request->NamaBelakang,
+                'email' => $request->EmailPemesan,
+                'name'  => $request->NamaDepanPemesan . " " . $request->NamaBelakangPemesan,
                 'item_order'  => $data,
                 'payment_transaction' => $create_payment_transaction,
                 'payment_items' => $create_payment_items,
-                'kota' => $request->Kota,
+                'kota' => $request->KotaPemesan,
                 'biaya_kirim' => $request->biaya_kirim,
                 'total_harga_barang' => $request->total_harga_barang,
                 'harga_total' => $harga,
                 'berat_total' => $berat,
             ];
 
-            Mail::to([$request->Email /*, 'emma.darmawan1@gmail.com'*/])->send(new CheckoutEmail($data_email));
-
+            // if (!$data_email && !$create_payment_transaction) {
+            //     Session::flash('errors', ['' => 'Checkout gagal! Silahkan periksa sebelum checkout']);
+            // }
+            
+            Mail::to([$request->EmailPemesan, 'emma.darmawan1@gmail.com'])->send(new CheckoutEmail($data_email));
+            
             return redirect('/');
         }
     }

@@ -22,6 +22,16 @@
                                 <li><i class="fa fa-angle-double-right"></i></li>
                                 <li><a href="javascript:void(0)">checkout</a></li>
                             </ul>
+                            @if (session('errors'))
+                                <div style="background-color: #f8d7da !important;border-color: #f5c2c7 !important;"
+                                    class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -38,60 +48,116 @@
                     <form method="POST" action="/checkout">
                         @csrf
                         <div class="row">
-                            <div class="col-lg-6 col-sm-12 col-xs-12">
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
                                 <div class="checkout-title">
-                                    <h3>Billing Details</h3>
+                                    <h3 class="text-center">Data Pemesan</h3>
                                 </div>
                                 <div class="theme-form">
                                     <div class="row check-out ">
                                         <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                             <label>Nama Depan</label>
-                                            <input type="text" name="NamaDepan" value="{{ auth()->user()->firstname }}"
-                                                placeholder="">
+                                            <input type="text" name="NamaDepanPemesan"
+                                                value="{{ auth()->user()->firstname }}" placeholder="Nama Depan">
                                         </div>
                                         <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                             <label>Nama Belakang</label>
-                                            <input type="text" name="NamaBelakang" value="{{ auth()->user()->lastname }}"
-                                                placeholder="">
+                                            <input type="text" name="NamaBelakangPemesan"
+                                                value="{{ auth()->user()->lastname }}" placeholder="Nama Belakang">
                                         </div>
                                         <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                             <label class="field-label">No Telepon</label>
-                                            <input type="text" name="Telephone" value="{{ auth()->user()->telephone }}"
-                                                placeholder="">
+                                            <input type="text" name="TelephonePemesan"
+                                                value="{{ auth()->user()->telephone }}" placeholder="Telephone">
                                         </div>
                                         <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                             <label class="field-label">Email</label>
-                                            <input type="text" name="Email" value="{{ auth()->user()->email }}"
-                                                placeholder="">
+                                            <input type="text" name="EmailPemesan" value="{{ auth()->user()->email }}"
+                                                placeholder="Email">
                                         </div>
                                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                             <label class="field-label">Alamat</label>
-                                            <input type="text" name="Alamat" value="{{ auth()->user()->address }}"
-                                                placeholder="Street address">
+                                            <input type="text" name="AlamatPemesan" value="{{ auth()->user()->address }}"
+                                                placeholder="Alamat">
                                         </div>
                                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                             <label class="field-label">Kode Pos</label>
-                                            <input type="text" name="KodePos" value="{{ auth()->user()->postal_code }}"
-                                                placeholder="">
+                                            <input type="text" name="KodePosPemesan"
+                                                value="{{ auth()->user()->postal_code }}" placeholder="Kode Pos">
                                         </div>
-                                        <div class="form-group col-md-12 col-sm-6 col-xs-12" id="the-basics">
-                                            <label class="field-label">Kota</label>
-                                            <input class="typeahead" id="search" type="text" name="Kota"
-                                                value="{{ auth()->user()->kota }}" placeholder="">
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" id="the-basics">
+                                            <label class="field-label"
+                                                style="margin-bottom: 10px !important;">Kota</label>
+                                            <input class="typeahead" id="search_pemesan" type="text" name="KotaPemesan"
+                                                value="{{ auth()->user()->kota }}" placeholder="Kota">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-sm-12 col-xs-12">
-                                <div class="checkout-details theme-form section-big-mt-space">
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                                <div class="checkout-title">
+                                    <h3 class="text-center">Data Penerima</h3>
+                                </div>
+                                <div class="theme-form">
+                                    <div class="row check-out ">
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                            <label class="field-label">Tujuan Pengiriman</label>
+                                            <select class="chosen_select form-select" id="tujuan_pengiriman"
+                                                name="tujuan_pengiriman" onchange="penerima()">
+                                                <option value="0" selected>Sama Dengan Pemesan</option>
+                                                <option value="1">Beda Dengan Pemesan</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-6 col-sm-6 col-xs-12" id="form_NamaDepanPenerima">
+                                            <label>Nama Depan</label>
+                                            <input type="text" id="NamaDepanPenerimaId" name="NamaDepanPenerima"
+                                                placeholder="Nama Depan">
+                                        </div>
+                                        <div class="form-group col-md-6 col-sm-6 col-xs-12" id="form_NamaBelakangPenerima">
+                                            <label>Nama Belakang</label>
+                                            <input type="text" id="NamaBelakangPenerimaId" name="NamaBelakangPenerima"
+                                                placeholder="Nama Belakang">
+                                        </div>
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" id="form_TelephonePenerima">
+                                            <label class="field-label">No Telepon</label>
+                                            <input type="text" id="TelephonePenerimaId" name="TelephonePenerima"
+                                                placeholder="Telepone">
+                                        </div>
+                                        {{-- <div class="form-group col-md-6 col-sm-6 col-xs-12" id="form_EmailPenerima">
+                                            <label class="field-label">Email</label>
+                                            <input type="text" id="EmailPenerimaId" name="EmailPenerima" placeholder="Email">
+                                        </div> --}}
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" id="form_AlamatPenerima">
+                                            <label class="field-label">Alamat</label>
+                                            <input type="text" id="AlamatPenerimaId" name="AlamatPenerima"
+                                                placeholder="Alamat">
+                                        </div>
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" id="form_KodePosPenerima">
+                                            <label class="field-label">Kode Pos</label>
+                                            <input type="text" id="KodePosPenerimaId" name="KodePosPenerima"
+                                                placeholder="Kode Pos">
+                                        </div>
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" id="form_search_penerima">
+                                            <label class="field-label"
+                                                style="margin-bottom: 10px !important;">Kota</label>
+                                            <input class="typeahead" id="search_penerima" type="text"
+                                                name="KotaPenerima" placeholder="Kota">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                                <div class="checkout-title">
+                                    <h3 class="text-center">Rincian Barang</h3>
+                                </div>
+                                <div class="checkout-details theme-form ">
                                     <div class="order-box" style="margin: 0 !important">
                                         <div
                                             style="border-bottom: 1px solid #dddddd;padding-bottom: 20px;margin-bottom: 20px;">
                                             <div class="row">
-                                                <div class="col-8">
+                                                <div class="col-6">
                                                     <p style="color: #444444;font-weight: 600;font-size: 22px;">Product</p>
                                                 </div>
-                                                <div class="col-4">
+                                                <div class="col-6">
                                                     <p style="color: #444444;font-weight: 600;font-size: 22px;">Total</p>
                                                 </div>
                                             </div>
@@ -100,13 +166,13 @@
                                             style="border-bottom: 1px solid #dddddd;padding-bottom: 20px;margin-bottom: 20px;">
                                             @foreach ($data_cart as $item)
                                                 <div class="row">
-                                                    <div class="col-8">
+                                                    <div class="col-6">
                                                         <p style="font-size: 15px;color: #444444;line-height: 20px;">
                                                             {{ $item['name_produk'] }}
                                                             {{ $item['variant_size'] }}
                                                             {{ $item['variant_color'] }} × {{ $item['jumlah'] }} </p>
                                                     </div>
-                                                    <div class="col-4">
+                                                    <div class="col-6">
                                                         <p
                                                             style="font-size: 18px;line-height: 20px;color: #333333;font-weight: 400;">
                                                             Rp.
@@ -118,11 +184,11 @@
                                         </div>
                                         <div class="sub-total">
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 16px;font-weight: 600;color: #333333;line-height: 20px;margin-bottom: 20px;">
                                                     Subtotal
                                                 </div>
-                                                <div class="col-4"
+                                                <div class="col-6"
                                                     style="font-size: 18px;line-height: 15px;color: #252525;font-weight: 400;">
                                                     Rp. {{ number_format($harga, 0, ',', '.') }}
                                                 </div>
@@ -130,11 +196,11 @@
                                                     value="{{ $harga }}">
                                             </div>
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 16px;font-weight: 600;color: #333333;line-height: 20px;margin-bottom: 20px;">
                                                     Total Berat
                                                 </div>
-                                                <div class="col-4"
+                                                <div class="col-6"
                                                     style="font-size: 18px;line-height: 15px;color: #252525;font-weight: 400;">
                                                     {{ $total_berat }} KG
                                                 </div>
@@ -142,11 +208,11 @@
                                                     value="{{ $total_berat }}">
                                             </div>
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 16px;font-weight: 600;color: #333333;line-height: 20px;margin-bottom: 20px;">
                                                     Layanan Pengiriman
                                                 </div>
-                                                <div class="col-4"
+                                                <div class="col-6"
                                                     style="font-size: 18px;line-height: 20px;color: #252525;font-weight: 400;">
                                                     <div id="shipping">
                                                         @if ($pengiriman->reg_est != 0)
@@ -173,22 +239,22 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 16px;font-weight: 600;color: #333333;line-height: 20px;margin-bottom: 20px;">
                                                     Estimasi
                                                 </div>
-                                                <div class="col-4" id="Estimasi"
+                                                <div class="col-6" id="Estimasi"
                                                     style="font-size: 18px;line-height: 15px;color: #252525;font-weight: 400;">
                                                     0 Hari
                                                 </div>
                                                 <input type="hidden" id="EstimasiVal" name="estimasi">
                                             </div>
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 16px;font-weight: 600;color: #333333;line-height: 20px;margin-bottom: 20px;">
                                                     Biaya Kirim
                                                 </div>
-                                                <div class="col-4" id="biaya_kirim"
+                                                <div class="col-6" id="biaya_kirim"
                                                     style="font-size: 18px;line-height: 15px;color: #252525;font-weight: 400;">
                                                     Rp. 0
                                                 </div>
@@ -197,11 +263,11 @@
                                         </div>
                                         <div>
                                             <div class="row">
-                                                <div class="col-8"
+                                                <div class="col-6"
                                                     style="font-size: 18px;font-weight: 400;color: #333333;line-height: 20px;margin-bottom: 10px;">
                                                     Total
                                                 </div>
-                                                <div class="col-4" id="total_bayar"
+                                                <div class="col-6" id="total_bayar"
                                                     style="font-size: 18px;line-height: 15px;color: #252525;font-weight: 400;">
                                                     Rp. {{ number_format($harga, 0, ',', '.') }}
                                                 </div>
@@ -274,8 +340,9 @@
                                         <p>Subscribe to our website mailling list <br> and get a Offer, Just for you!</p>
                                         <form
                                             action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda"
-                                            class="auth-form needs-validation" method="post" id="mc-embedded-subscribe-form"
-                                            name="mc-embedded-subscribe-form" target="_blank">
+                                            class="auth-form needs-validation" method="post"
+                                            id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form"
+                                            target="_blank">
                                             <div class="form-group mx-sm-3">
                                                 <input type="email" class="form-control" name="EMAIL" id="mce-EMAIL"
                                                     placeholder="Enter your email" required="required">

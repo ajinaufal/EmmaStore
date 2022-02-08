@@ -10,6 +10,15 @@
                         <div class="media-body">
                             <a href="product-page(left-sidebar).html">
                                 <h4>{{ $item['name_produk'] }}</h4>
+                                <h6>
+                                    @if ($item['variant_size'] && $item['variant_color'])
+                                        {{ $item['variant_size']->nama }} & {{ $item['variant_color']->nama }}
+                                    @elseif ($item['variant_size'])
+                                        {{ $item['variant_size']->nama }}
+                                    @elseif ($item['variant_color'])
+                                        {{ $item['variant_color']->nama }}
+                                    @endif
+                                </h6>
                             </a>
                             <h6>
                                 Rp. {{ number_format($item['onsale'], 0, ',', '.') }} @if ($item['harga']) <span>Rp. {{ number_format($item['harga'], 0, ',', '.') }}</span> @endif

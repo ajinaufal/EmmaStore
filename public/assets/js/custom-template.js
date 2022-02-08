@@ -14,73 +14,7 @@ function variant_color_cart_detail(id) {
     console.log(size);
 }
 
-$(document).ready(function ($) {
-
-    $('#search').typeahead({
-        source: function (query, process) {
-            return $.get('/api/search', {
-                query: query
-            }, function (data) {
-                $('#ONSS').parent().hide();
-                $('#REGG').parent().hide();
-                return process(data);
-            });
-        },
-        updater: function (item) {
-            $.ajax({
-                url: "/data_kota",
-                type: "POST",
-                data: {
-                    nama_kota: item,
-                },
-                success: function (data) {
-                    $('input[type=radio][name=shipping]').change(function () {
-                        if (this.value == 'ONS') {
-                            document.getElementById("Estimasi").innerHTML =
-                                data[0]['ons_est'] + " Hari";
-                            document.getElementById("biaya_kirim")
-                                .innerHTML = "Rp. " + new Intl.NumberFormat(
-                                    ['ban', 'id']).format(data[0][
-                                        'ons_rate'
-                                    ]);
-                            document.getElementById("total_bayar")
-                                .innerHTML = "Rp. " + new Intl.NumberFormat(
-                                    ['ban', 'id']).format(data[0][
-                                        'ons_rate'
-                                    ] + data[2]);
-                        } else if (this.value == 'REG') {
-                            document.getElementById("Estimasi").innerHTML =
-                                data[0]['reg_est'] + " Hari";
-                            document.getElementById("biaya_kirim")
-                                .innerHTML = "Rp. " + new Intl.NumberFormat(
-                                    ['ban', 'id']).format(data[0][
-                                        'reg_rate'
-                                    ]);
-                            document.getElementById("total_bayar")
-                                .innerHTML = "Rp. " + new Intl.NumberFormat(
-                                    ['ban', 'id']).format(data[0][
-                                        'reg_rate'
-                                    ] + data[2]);
-                        }
-                    });
-                    if (data[0]['ons_est'] != 0 && data[0]['reg_est'] != 0) {
-                        $('#REG').parent().show();
-                        $('#ONS').parent().show();
-                    } else if (data[0]['reg_est'] != 0) {
-                        $('#REG').parent().show();
-                        $('#ONS').parent().hide();
-                    } else if (data[0]['ons_est'] != 0) {
-                        $('#ONS').parent().show();
-                        $('#REG').parent().hide();
-                    }
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
-            return item;
-        }
-    });
+$(document).ready(function ($) {    
     $(document).on('click', '#opencart', function (e) {
         $.get('/readcart', function (data, status) {
             if (status == "success") {

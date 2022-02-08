@@ -1,4 +1,4 @@
-@extends("template")
+@extends("template",['etalase'=>$etalase])
 
 @section('page_title', 'Tentang Kami')
 @section('meta_desc', 'Di DebiruHouse, kami menjual PARFUM ORIGINAL & produk perawatan tubuh lainnya')
@@ -402,9 +402,13 @@
                                                                 </div>
                                                                 <div class="icon-detail">
                                                                     @if (Auth::check())
-                                                                        <button id="button_cart_etalase"
+                                                                        <button id="button_cart" data-bs-toggle="modal"
+                                                                            data-bs-target="#addtocart"
                                                                             data-user_id="{{ auth()->user()->id }}"
-                                                                            data-product_id="{{ $p->id }}"
+                                                                            data-id="{{ $p->id }}"
+                                                                            data-name="{{ $p->nama }}"
+                                                                            data-harga="{{ $p->harga }}"
+                                                                            data-gambar="{{ $p->gambar1 }}"
                                                                             class="tooltip-top add-cartnoty"
                                                                             data-tippy-content="Add to cart">
                                                                             <i data-feather="shopping-cart"></i>

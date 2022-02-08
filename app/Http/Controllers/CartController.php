@@ -17,7 +17,12 @@ class CartController extends Controller
         $variant_color = $request->id_variant_color;
         $variant_size = $request->id_variant_size;
         $product = Products::where('id', $request->id_productt)->first();
-        $cart = cart::where([['products_id', $request->id_product], ['user_id', $request->id_user]])->get();
+        $cart = cart::where([
+            ['products_id', $request->id_product],
+            ['user_id', $request->id_user],
+            ['variant_size', $variant_size],
+            ['variant_color', $variant_color],
+        ])->get();
 
         if ($cart->count() == 0) {
             if ($request->total != 0) {
@@ -61,6 +66,8 @@ class CartController extends Controller
                 'jumlah' => $value->total,
                 'user_id' => $user,
                 'stock' => $product->stok,
+                'variant_size' => ProductVarian::where('id', $value->variant_size)->first(),
+                'variant_color' => ProductVarian::where('id', $value->variant_color)->first(),
             ];
             $harga[$key] = $value->total * $product->harga;
         }
@@ -219,7 +226,7 @@ class CartController extends Controller
     {
         $item = Products::where('id', $request->id_product)->first();
         $variant = ProductVarian::where('product_id', $request->id_product)->get();
-        $cart = cart::where([['user_id', auth()->user()->id],['products_id', $request->id_product]])->first();
+        $cart = cart::where([['user_id', auth()->user()->id], ['products_id', $request->id_product]])->first();
         return view('modal.edit-product', [
             'product' => $item,
             'variant' => $variant,
