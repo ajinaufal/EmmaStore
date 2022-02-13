@@ -169,8 +169,7 @@
                                                                             </div>
                                                                             <div class="cart-info">
                                                                                 @if (Auth::check())
-                                                                                    <a id="button_cart"
-                                                                                        data-bs-toggle="modal"
+                                                                                    <a id="button_cart" data-bs-toggle="modal"
                                                                                         data-bs-target="#addtocart"
                                                                                         data-user_id="{{ auth()->user()->id }}"
                                                                                         data-id="{{ $newstuff[$j * 5 + $i]->id }}"
@@ -305,11 +304,22 @@
                                                             @if (Auth::check())
                                                                 <a id="button_cart" data-bs-toggle="modal"
                                                                     data-bs-target="#addtocart"
+                                                                    data-user_id="{{ auth()->user()->id }}"
                                                                     data-id="{{ $top5->id }}"
+                                                                    data-name="{{ $top5->nama }}"
+                                                                    data-harga="{{ $top5->harga }}"
+                                                                    data-gambar="{{ $top5->gambar1 }}"
                                                                     class="tooltip-top open-AddtoCart"
                                                                     data-tippy-content="Add to cart">
                                                                     <i data-feather="shopping-cart"></i>
                                                                 </a>
+                                                                {{-- <a id="button_cart" data-bs-toggle="modal"
+                                                                    data-bs-target="#addtocart"
+                                                                    data-id="{{ $top5->id }}"
+                                                                    class="tooltip-top open-AddtoCart"
+                                                                    data-tippy-content="Add to cart">
+                                                                    <i data-feather="shopping-cart"></i>
+                                                                </a> --}}
                                                             @else
                                                                 <a href="javascript:void(0)" onclick="openAccount()">
                                                                     <i data-feather="shopping-cart"></i>
