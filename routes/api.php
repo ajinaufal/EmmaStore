@@ -16,11 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-// Route::post('data',  [CartController::class, 'store']);
-// Route::post('/readcart', [CartController::class, 'read']);\
 Route::post('update',  [CartController::class, 'update']);
 Route::post('dalete',  [CartController::class, 'delet']);
 

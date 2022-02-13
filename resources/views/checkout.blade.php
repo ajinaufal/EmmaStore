@@ -102,7 +102,9 @@
                                         <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                             <label class="field-label">Tujuan Pengiriman</label>
                                             <select class="chosen_select form-select" id="tujuan_pengiriman"
-                                                name="tujuan_pengiriman" onchange="penerima()">
+                                                name="tujuan_pengiriman" 
+                                                {{-- onchange="penerima()" --}}
+                                                >
                                                 <option value="0" selected>Sama Dengan Pemesan</option>
                                                 <option value="1">Beda Dengan Pemesan</option>
                                             </select>
@@ -215,18 +217,6 @@
                                                 <div class="col-6"
                                                     style="font-size: 18px;line-height: 20px;color: #252525;font-weight: 400;">
                                                     <div id="shipping">
-                                                        @if ($pengiriman->reg_est != 0)
-                                                            <div class="shopping-option">
-                                                                <input type="radio" name="shippingg" id="REGG" value="REG">
-                                                                <label for="free-shipping">REG</label>
-                                                            </div>
-                                                        @endif
-                                                        @if ($pengiriman->ons_est != 0)
-                                                            <div class="shopping-option">
-                                                                <input type="radio" name="shippingg" id="ONSS" value="ONS">
-                                                                <label for="free-shipping">ONS</label>
-                                                            </div>
-                                                        @endif
                                                         <div class="shopping-option">
                                                             <input type="radio" name="shipping" id="ONS" value="ONS">
                                                             <label for="free-shipping">ONS</label>

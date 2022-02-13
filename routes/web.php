@@ -58,7 +58,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/get_data', [CartController::class, 'get_data']);
     Route::post('/profile', [ProfileController::class, 'update']);
     Route::get('/profile', [ProfileController::class, 'index']);
-    Route::post('data_kota', [CartController::class, 'data_kota']);
+    // Route::post('data_kota', [CartController::class, 'data_kota']);
     Route::get('/checkout', [CheckoutController::class, 'index']);
     Route::post('/checkout', [CheckoutController::class, 'checkout']);
     Route::get('/logout', 'App\Http\Controllers\AuthController@logout')->name('logout');

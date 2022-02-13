@@ -119,7 +119,7 @@ $(document).ready(function ($) {
                 }
             }
         } else {
-            console.log("gak masuk")
+            console.log("Variant Kosong")
         }
 
         // console.log(color_variant, size_variant, info);

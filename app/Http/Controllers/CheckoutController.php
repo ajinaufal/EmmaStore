@@ -89,6 +89,28 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
+        // For test input if failed
+        // dd([$request->all(), 
+        //     $request->payment_group,
+        //     $request->NamaDepanPemesan,
+        //     $request->NamaBelakangPemesan,
+        //     $request->EmailPemesan,
+        //     $request->TelephonePemesan,
+        //     $request->AlamatPemesan,
+        //     $request->KodePosPemesan,
+        //     $request->KotaPemesan,
+        //     $request->shipping,
+        //     $request->tujuan_pengiriman,
+        //     $request->NamaDepanPenerima,
+        //     $request->NamaBelakangPenerima,
+        //     $request->TelephonePenerima,
+        //     $request->AlamatPenerima,
+        //     $request->KodePosPenerima,
+        //     $request->KotaPenerima,
+        //     $request->total_bayar,
+        //     $request->total_berat_barang,
+        // ]);
+
         $rules = [
             'payment_group' => 'required',
             'NamaDepanPemesan' => 'required',
@@ -98,20 +120,23 @@ class CheckoutController extends Controller
             'AlamatPemesan' => 'required',
             'KodePosPemesan' => 'required',
             'KotaPemesan' => 'required',
-            'shippingg' => 'required',
-            // 'total_harga_barang' => 'required',
-            // 'biaya_kirim' => 'required', 
-            // 'total_berat_barang' => 'required',
-            // 'total_bayar' => 'required',
+            'shipping' => 'required',
         ];
     
         $customMessages = [
-            'required' => 'Checkout gagal, pastikan anda mengisi form checkout dengan benar!'
+            'payment_group.required' => 'Pemilihan Payment Kosong, pastikan anda mengisi form checkout dengan benar!',
+            'NamaDepanPemesan.required' => 'Nama depan pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'NamaBelakangPemesan.required' => 'Nama belakang pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'EmailPemesan.required' => 'Email pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'TelephonePemesan.required' => 'Telephone pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'AlamatPemesan.required' => 'Alamat pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'KodePosPemesan.required' => 'Kode pos pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'KotaPemesan.required' => 'Kota pemesan kosong, pastikan anda mengisi form checkout dengan benar!',
+            'shippingg.required' => 'Pemilihan Layanan pengiriman kosong, pastikan anda mengisi form checkout dengan benar!',
         ];
 
         $this->validate($request, $rules, $customMessages);
 
-        // dd($request->all());
         if (online_payment_transaction::latest('online_payment_transaction_id')->get()->count() != 0) {
             $trans_no = online_payment_transaction::latest('online_payment_transaction_id')->first()->online_payment_transaction_id + 1;
         } else {
@@ -237,22 +262,24 @@ class CheckoutController extends Controller
                 }
             }
 
+            if ($request->tujuan_pengiriman == 0) {
+                $kota = $request->KotaPemesan;
+            } elseif ($request->tujuan_pengiriman == 1) {
+                $kota = $request->KotaPenerima;
+            }
+
             $data_email = [
                 'email' => $request->EmailPemesan,
                 'name'  => $request->NamaDepanPemesan . " " . $request->NamaBelakangPemesan,
                 'item_order'  => $data,
                 'payment_transaction' => $create_payment_transaction,
                 'payment_items' => $create_payment_items,
-                'kota' => $request->KotaPemesan,
+                'kota' => $kota,
                 'biaya_kirim' => $request->biaya_kirim,
                 'total_harga_barang' => $request->total_harga_barang,
                 'harga_total' => $harga,
                 'berat_total' => $berat,
             ];
-
-            // if (!$data_email && !$create_payment_transaction) {
-            //     Session::flash('errors', ['' => 'Checkout gagal! Silahkan periksa sebelum checkout']);
-            // }
             
             Mail::to([$request->EmailPemesan, 'emma.darmawan1@gmail.com'])->send(new CheckoutEmail($data_email));
             

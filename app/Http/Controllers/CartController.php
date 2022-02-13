@@ -112,6 +112,8 @@ class CartController extends Controller
                 'jumlah' => $value->total,
                 'user_id' => $user,
                 'stock' => $product->stok,
+                'variant_size' => ProductVarian::where('id', $value->variant_size)->first(),
+                'variant_color' => ProductVarian::where('id', $value->variant_color)->first(),
             ];
             $harga[$key] = $value->total * $product->harga;
         }
@@ -176,40 +178,40 @@ class CartController extends Controller
         return response()->json($data);
     }
 
-    public function data_kota(Request $request)
-    {
-        $cart = cart::where('user_id', auth()->user()->id)->get();
+    // public function data_kota(Request $request)
+    // {
+    //     $cart = cart::where('user_id', auth()->user()->id)->get();
 
-        $nama_kota = tiki::where('nama_kota', $request->nama_kota)->first();
-        $tiki = [
-            'tiki_id' => $nama_kota->tiki_id,
-            'kode_kota' => $nama_kota->kode_kota,
-            'nama_kota' => $nama_kota->nama_kota,
-            'reg_rate' => $nama_kota->reg_rate,
-            'reg_est' => $nama_kota->reg_est,
-            'ons_rate' => $nama_kota->ons_rate,
-            'ons_est' => $nama_kota->ons_est,
-        ];
+    //     $nama_kota = tiki::where('nama_kota', $request->nama_kota)->first();
+    //     $tiki = [
+    //         'tiki_id' => $nama_kota->tiki_id,
+    //         'kode_kota' => $nama_kota->kode_kota,
+    //         'nama_kota' => $nama_kota->nama_kota,
+    //         'reg_rate' => $nama_kota->reg_rate,
+    //         'reg_est' => $nama_kota->reg_est,
+    //         'ons_rate' => $nama_kota->ons_rate,
+    //         'ons_est' => $nama_kota->ons_est,
+    //     ];
 
-        foreach ($cart as $key => $value) {
-            $product = Products::where('id', $value->products_id)->first();
-            $data[$key] = [
-                'id_cart' => $value->id,
-                'name_produk' => $product->nama,
-                'harga' => $product->harga,
-                'berat' => $product->berat,
-                'onsale' => $product->onsale,
-                'gambar' => $product->gambar1,
-                'jumlah' => $value->total,
-                'user_id' => $value->products_id,
-                'stock' => $product->stok,
-            ];
-            $harga[$key] = $value->total * $product->harga;
-            $berat[$key] = $product->berat;
-        }
+    //     foreach ($cart as $key => $value) {
+    //         $product = Products::where('id', $value->products_id)->first();
+    //         $data[$key] = [
+    //             'id_cart' => $value->id,
+    //             'name_produk' => $product->nama,
+    //             'harga' => $product->harga,
+    //             'berat' => $product->berat,
+    //             'onsale' => $product->onsale,
+    //             'gambar' => $product->gambar1,
+    //             'jumlah' => $value->total,
+    //             'user_id' => $value->products_id,
+    //             'stock' => $product->stok,
+    //         ];
+    //         $harga[$key] = $value->total * $product->harga;
+    //         $berat[$key] = $product->berat;
+    //     }
 
-        return response([$tiki, $data, array_sum($harga), $berat]);
-    }
+    //     return response([$tiki, $data, array_sum($harga), $berat]);
+    // }
 
     public function get_data(Request $request)
     {
@@ -219,7 +221,7 @@ class CartController extends Controller
             $harga[$key] = $value->total * $product->harga;
         }
         $data_kota = tiki::where('nama_kota', $request->kota)->first();
-        return response()->json([$data_kota, array_sum($harga)]);
+        return response()->json([$data_kota, array_sum($harga), $product, $cart]);
     }
 
     public function get_item(Request $request)

@@ -402,14 +402,15 @@
                                                                 </div>
                                                                 <div class="icon-detail">
                                                                     @if (Auth::check())
-                                                                        <button id="button_cart" data-bs-toggle="modal"
+                                                                        <button id="button_cart" 
+                                                                            data-bs-toggle="modal"
                                                                             data-bs-target="#addtocart"
                                                                             data-user_id="{{ auth()->user()->id }}"
                                                                             data-id="{{ $p->id }}"
                                                                             data-name="{{ $p->nama }}"
                                                                             data-harga="{{ $p->harga }}"
                                                                             data-gambar="{{ $p->gambar1 }}"
-                                                                            class="tooltip-top add-cartnoty"
+                                                                            class="tooltip-top"
                                                                             data-tippy-content="Add to cart">
                                                                             <i data-feather="shopping-cart"></i>
                                                                         </button>
