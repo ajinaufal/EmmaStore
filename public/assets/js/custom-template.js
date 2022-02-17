@@ -223,7 +223,21 @@ $(document).ready(function ($) {
             },
             error: function (data) {
                 console.log('menghapus barang gagal')
-                console.log(data)
+            }
+        });
+
+        $.ajax({
+            url: "/api/readtotalcart",
+            type: "POST",
+            data: {
+                user_id: user_id,
+            },
+            success: function (data) {
+                document.getElementById("count_cart").innerHTML = data.total;
+                console.log('update total cart sukses')
+            },
+            error: function (data) {
+                console.log('update total cart gagal')
             }
         });
     })

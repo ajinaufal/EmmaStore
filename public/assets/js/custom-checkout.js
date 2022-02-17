@@ -34,20 +34,20 @@ function GetNamaKotaPemesan(nama_kota, tujuan_pengirim) {
                     if (this.value == 'ONS') {
                         document.getElementById("Estimasi").innerHTML = data[0].ons_est + " Hari";
                         document.getElementById("biaya_kirim").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format(data[0].ons_rate);
-                        document.getElementById("total_bayar").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format((Math.ceil(data[2]['berat']) * data[3][0]['total'] * data[0].ons_rate) + data[1]);
+                        document.getElementById("total_bayar").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format((Math.ceil(parseFloat(document.getElementById("total_berat_barang").value)) * data[0].ons_rate) + data[1]);
 
                         document.getElementById("EstimasiVal").value = data[0].ons_est;
                         document.getElementById("biaya_kirimVal").value = data[0].ons_rate;
-                        document.getElementById("total_bayarVal").value = (Math.ceil(data[2]['berat']) * data[3][0]['total'] * data[0].ons_rate) + data[1];
+                        document.getElementById("total_bayarVal").value = (Math.ceil(parseFloat(document.getElementById("total_berat_barang").value)) * data[0].ons_rate) + data[1];
 
                     } else if (this.value == 'REG') {
                         document.getElementById("Estimasi").innerHTML = data[0].reg_est + " Hari";
                         document.getElementById("biaya_kirim").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format(data[0].reg_rate);
-                        document.getElementById("total_bayar").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format((Math.ceil(data[2]['berat']) * data[3][0]['total'] * data[0].reg_rate) + data[1]);
+                        document.getElementById("total_bayar").innerHTML = "Rp. " + new Intl.NumberFormat(['ban', 'id']).format((Math.ceil(parseFloat(document.getElementById("total_berat_barang").value)) * data[0].reg_rate) + data[1]);
 
                         document.getElementById("EstimasiVal").value = data[0].reg_est;
                         document.getElementById("biaya_kirimVal").value = data[0].reg_rate;
-                        document.getElementById("total_bayarVal").value = (Math.ceil(data[2]['berat']) * data[3][0]['total'] * data[0].reg_rate) + data[1];
+                        document.getElementById("total_bayarVal").value = (Math.ceil(parseFloat(document.getElementById("total_berat_barang").value)) * data[0].reg_rate) + data[1];
                     }
                 });
             }

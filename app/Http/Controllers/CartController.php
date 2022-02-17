@@ -48,6 +48,15 @@ class CartController extends Controller
             'message' => 'successful'
         ], 200);
     }
+    
+    public function readTotalCart(Request $request)
+    {
+        $total = cart::where('user_id', $request->user_id)->count();
+        return response()->json([
+            'total' => $total,
+            'message' => 'successful'
+        ], 200);
+    }
 
     public function read()
     {

@@ -20,6 +20,7 @@ Route::post('update',  [CartController::class, 'update']);
 Route::post('dalete',  [CartController::class, 'delet']);
 
 Route::get('search', [CartController::class, 'search']);
+Route::post('readtotalcart', [CartController::class, 'readTotalCart']);
 
 Route::post('add_item', [CartController::class, 'store']);
 
